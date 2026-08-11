@@ -151,7 +151,13 @@ const faqSchema = {
           <a class="nav-link" href="#nearby">Duol</a>
           <a class="nav-link" href="#faq">FAQ</a>
         </nav>
-        <a href="#mapa" class="border-2 border-[var(--ink)] bg-[var(--ink)] px-4 py-2.5 text-xs font-black uppercase tracking-[.14em] text-[var(--paper)] shadow-[4px_4px_0_var(--market-orange)] transition hover:-translate-y-0.5">Mapa</a>
+        <div class="flex items-center gap-2">
+          <div role="group" aria-label="Pagpili sa sinultian" class="flex items-center border-2 border-[var(--ink)] text-[11px] font-black uppercase tracking-[.14em]">
+            <a href="/" class="px-3 py-2.5 bg-[var(--market-orange)] text-[var(--ink)] border-r-2 border-[var(--ink)]" aria-current="true">Cebuano</a>
+            <a href="/fil/" class="px-3 py-2.5 bg-[var(--paper)] text-[var(--ink)] hover:bg-white/50 transition">Filipino</a>
+          </div>
+          <a href="#mapa" class="border-2 border-[var(--ink)] bg-[var(--ink)] px-4 py-2.5 text-xs font-black uppercase tracking-[.14em] text-[var(--paper)] shadow-[4px_4px_0_var(--market-orange)] transition hover:-translate-y-0.5">Mapa</a>
+        </div>
       </div>
     </header>
 
@@ -421,12 +427,12 @@ const faqSchema = {
             <div class="overflow-hidden border-2 border-[var(--ink)] bg-[var(--ink)] shadow-[8px_8px_0_var(--market-orange)]">
               <iframe
                 title="Mapa sa Carbon Market, Cebu City"
-                src="https://www.google.com/maps?q=10.2914389%2C123.899131&hl=ceb&z=17&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.629099811328!2d123.8965560769825!3d10.291438889829356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be492180e93%3A0xfca7d1bdb78de28f!2z5Y2h5bCU6YKm5biC5Zy6!5e0!3m2!1szh-CN!2s!4v1786413885743!5m2!1szh-CN!2s"
                 width="100%"
                 height="520"
                 style="border:0"
                 loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
+                referrerpolicy="strict-origin-when-cross-origin"
                 allowfullscreen
               ></iframe>
             </div>

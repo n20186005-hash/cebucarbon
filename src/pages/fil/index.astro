@@ -1,0 +1,478 @@
+---
+import '../../styles/global.css';
+
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const socialImage = Astro.site ? new URL('/images/carbon-market-hero.jpg', Astro.site).href : undefined;
+const pageTitle = 'Pamilihang Carbon · Ang buhay na pamilihan sa gitna ng Cebu';
+const pageDescription = 'Gabay sa pagbisita sa Carbon Market sa Lungsod ng Cebu: libreng pagpasok, pagkain, transportasyon, paradahan, kalapit na heritage spots, mapa at praktikal na mga tip.';
+
+const highlights = [
+  { value: 'Libre', label: 'pagpasok sa pamilihan' },
+  { value: '1–3 oras', label: 'mainam na tagal ng paglilibot' },
+  { value: 'Maagang umaga', label: 'para sa mga sariwang dating' },
+  { value: 'Downtown', label: 'malapit sa lumang Cebu' },
+];
+
+const nearby = [
+  { name: 'Magellan’s Cross', note: 'Maikling lakad patungong Plaza Sugbo; madaling isama sa isang heritage walk.' },
+  { name: 'Basilica Minore del Santo Niño', note: 'Ang pinakakilalang religious landmark sa sentro ng Cebu, katabi lang ng Magellan’s Cross.' },
+  { name: 'Fort San Pedro', note: 'Magpatuloy mula sa Plaza Independencia para sa isang maayos na ruta mula pamilihan hanggang sa baybayin.' },
+  { name: 'Casa Gorordo Museum', note: 'Para sa mas malalim na pagtingin sa buhay at arkitektura ng lumang Cebu.' },
+];
+
+const faqs = [
+  {
+    q: 'May entrance fee ba sa Carbon Market?',
+    a: 'Wala. Libre ang pagpasok sa pamilihan. Babayaran mo lang ang iyong bibilhin, pagkain, transportasyon at iba pang personal na gastos.'
+  },
+  {
+    q: 'Ano ang pinakamagandang oras para pumunta?',
+    a: 'Maagang umaga ang maganda para sa mga sariwang dating at mas malamig na paglalakad. Kung gusto mo ng mas buhay na food-and-city atmosphere, maganda rin ang huling bahagi ng hapon. Nagkakaiba ang oras ng bawat tindahan.'
+  },
+  {
+    q: 'Ilang oras ang dapat ilaan?',
+    a: 'Kadalasan sapat ang 1–3 oras para sa pamilihan, pagkain at pagkuha ng litrato. Dagdagan ang oras kung isasama mo ang Basilica, Magellan’s Cross at Fort San Pedro.'
+  },
+  {
+    q: 'Paano pumunta kung galing sa sentro ng Cebu?',
+    a: 'Taxi o Grab ang pinakamadali. Sa jeepney, hanapin ang signboard na patungong Carbon at itanong sa drayber dahil maaaring magbago ang ruta dahil sa traffic at redevelopment.'
+  },
+  {
+    q: 'May paradahan ba?',
+    a: 'May mga opsyon sa paradahan sa loob ng muling binuong Carbon area at malapit sa Pusô Village. Ang access at kapasidad ay maaaring magbago, kaya sundin ang on-site signs at marshals sa araw ng iyong pagbisita.'
+  },
+  {
+    q: 'Ayos ba dalhin ang bata o senior?',
+    a: 'Pwede, ngunit tandaan na aktibong pamilihan ito: maaaring masikip, basa ang ilang daanan at marami ang delivery traffic. Mas komportable ang closed shoes at mas mabagal na pacing.'
+  },
+];
+
+const attractionSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['TouristAttraction', 'LocalBusiness'],
+  name: 'Carbon Market',
+  alternateName: 'Pamilihang Carbon',
+  description: pageDescription,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '59 M. C. Briones St',
+    addressLocality: 'Cebu City',
+    postalCode: '6000',
+    addressRegion: 'Cebu',
+    addressCountry: 'PH',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 10.2914389,
+    longitude: 123.899131,
+  },
+  openingHoursSpecification: [
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Monday', opens: '00:00', closes: '19:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Tuesday', opens: '00:00', closes: '19:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Wednesday', opens: '00:00', closes: '19:00' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Thursday', opens: '05:00', closes: '18:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday', opens: '00:30', closes: '10:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '00:00', closes: '15:30' },
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '00:00', closes: '19:00' },
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: 3.3,
+    bestRating: 5,
+  },
+  isAccessibleForFree: true,
+  priceRange: 'Libre ang pagpasok',
+  ...(canonical ? { url: canonical } : {}),
+  ...(socialImage ? { image: socialImage } : {}),
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
+---
+
+<!doctype html>
+<html lang="fil">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="theme-color" content="#15271f" />
+    <meta name="color-scheme" content="light" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:locale" content="fil_PH" />
+    {canonical && <meta property="og:url" content={canonical} />}
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="/icons/favicon-16.png" sizes="16x16" type="image/png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <script type="application/ld+json" set:html={JSON.stringify(attractionSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-HXM22WWPKP');
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:bg-[var(--market-orange)] focus:px-4 focus:py-3 focus:font-bold">Laktawan patungo sa nilalaman</a>
+
+    <header class="sticky top-0 z-50 border-b-2 border-[var(--ink)] bg-[color:rgba(243,234,213,.94)] backdrop-blur-md">
+      <div class="shell flex min-h-18 items-center justify-between gap-6 py-3">
+        <a href="#top" aria-label="Pamilihang Carbon — bumalik sa itaas" class="shrink-0">
+          <img src="/logo.svg" width="242" height="64" alt="Pamilihang Carbon" class="h-12 w-auto sm:h-13" />
+        </a>
+        <nav aria-label="Pangunahing nabigasyon" class="hidden items-center gap-6 text-[13px] font-extrabold uppercase tracking-[.13em] lg:flex">
+          <a class="nav-link" href="#experience">Karanasan</a>
+          <a class="nav-link" href="#plan">Plano</a>
+          <a class="nav-link" href="#food">Pagkain</a>
+          <a class="nav-link" href="#nearby">Malapit</a>
+          <a class="nav-link" href="#faq">FAQ</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <div role="group" aria-label="Pagpili ng wika" class="flex items-center border-2 border-[var(--ink)] text-[11px] font-black uppercase tracking-[.14em]">
+            <a href="/" class="px-3 py-2.5 bg-[var(--paper)] text-[var(--ink)] border-r-2 border-[var(--ink)] hover:bg-white/50 transition">Cebuano</a>
+            <a href="/fil/" class="px-3 py-2.5 bg-[var(--market-orange)] text-[var(--ink)]" aria-current="true">Filipino</a>
+          </div>
+          <a href="#mapa" class="border-2 border-[var(--ink)] bg-[var(--ink)] px-4 py-2.5 text-xs font-black uppercase tracking-[.14em] text-[var(--paper)] shadow-[4px_4px_0_var(--market-orange)] transition hover:-translate-y-0.5">Mapa</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section id="top" class="market-grid relative overflow-hidden border-b-2 border-[var(--ink)]">
+        <div class="shell grid min-h-[calc(100vh-76px)] items-stretch lg:grid-cols-[.92fr_1.08fr]">
+          <div class="relative z-10 flex flex-col justify-center py-14 lg:pr-12 lg:py-20">
+            <p class="kicker">Lungsod ng Cebu · Sugbo</p>
+            <h1 class="display mt-6 max-w-[8ch] text-[clamp(4.7rem,11vw,9.8rem)] leading-[.78]">Carbon Market</h1>
+            <div class="mt-7 max-w-xl border-l-[5px] border-[var(--market-orange)] pl-5 text-lg leading-8 text-[var(--ink-soft)] sm:text-xl">
+              Hindi ito lugar na titingnan lamang. Ito ay isang <strong>buhay na pamilihan</strong> — mga sariwang produkto, tinig ng mga tindero, puso at ulam, at pang-araw-araw na buhay ng lumang Cebu.
+            </div>
+            <div class="mt-9 flex flex-wrap gap-3">
+              <a href="#plan" class="inline-flex items-center gap-3 border-2 border-[var(--ink)] bg-[var(--market-orange)] px-5 py-3.5 text-sm font-black uppercase tracking-[.12em] shadow-[5px_5px_0_var(--ink)] transition hover:-translate-y-1">Planoin ang paglilibot <span aria-hidden="true">↘</span></a>
+              <a href="#experience" class="inline-flex items-center gap-3 border-2 border-[var(--ink)] bg-[var(--paper)] px-5 py-3.5 text-sm font-black uppercase tracking-[.12em] transition hover:bg-white/50">Kilalanin ang pamilihan</a>
+            </div>
+            <p class="mt-8 max-w-lg text-sm leading-6 text-[var(--muted)]">Nagpapatuloy ang redevelopment sa Carbon; maaaring magbago ang ilang entrada, pwesto at daloy ng trapiko. Sundin ang on-site signage sa araw ng pagbisita.</p>
+          </div>
+
+          <div class="relative min-h-[550px] border-t-2 border-[var(--ink)] lg:border-l-2 lg:border-t-0">
+            <img src="/images/carbon-market-hero.jpg" alt="Tanawin sa gabi ng Carbon Market na puno ng mga bisita at ilaw ng pamilihan" width="1400" height="934" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[rgba(21,39,31,.72)] via-transparent to-[rgba(21,39,31,.15)]"></div>
+            <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
+              <div class="max-w-sm bg-[var(--paper)] p-4 shadow-[5px_5px_0_var(--market-orange)]">
+                <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Gitna ng downtown</p>
+                <p class="mt-1 font-bold leading-6">Pamilihan, pagkain at mga heritage landmark sa iisang lakaran lamang.</p>
+              </div>
+              <div class="hidden size-20 rotate-6 items-center justify-center border-2 border-[var(--paper)] bg-[var(--ink)] text-center text-[10px] font-black uppercase tracking-[.1em] text-[var(--paper)] sm:flex">Lakad<br/>Cebu</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]">
+          <div class="shell grid grid-cols-2 lg:grid-cols-4">
+            {highlights.map((item, index) => (
+              <div class:list={["px-4 py-5 sm:px-6", index > 0 && "border-l border-white/20", index === 2 && "border-l-0 lg:border-l", index >= 2 && "border-t border-white/20 lg:border-t-0"]}>
+                <div class="display text-2xl text-[var(--market-orange)] sm:text-3xl">{item.value}</div>
+                <div class="mt-1 text-xs font-semibold uppercase tracking-[.1em] text-white/68">{item.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="experience" class="section-pad overflow-hidden">
+        <div class="shell">
+          <div class="grid items-end gap-8 lg:grid-cols-[.8fr_1.2fr]">
+            <div>
+              <p class="kicker">Karanasan sa Carbon</p>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Pamilihan muna. Tourist spot pangalawa.</h2>
+            </div>
+            <p class="max-w-2xl text-lg leading-8 text-[var(--muted)] lg:justify-self-end">Ang Carbon ay isa sa mga pinakakilalang public market sa Cebu. Ang ganda nito ay nasa tunay na galaw ng lungsod: prutas at gulay, isda, karne, dry goods, handicrafts at pagkain — hindi curated display, kundi pang-araw-araw na pagbili at pagbebenta.</p>
+          </div>
+
+          <div class="mt-14 grid auto-rows-[220px] gap-5 md:grid-cols-12 md:auto-rows-[240px]">
+            <figure class="photo-frame relative md:col-span-7 md:row-span-2">
+              <img src="/images/carbon-market-aerial.jpg" alt="Tanawin sa itaas ng Carbon Market area sa gabi" loading="lazy" width="1024" height="767" />
+              <figcaption class="absolute bottom-3 left-3 bg-[var(--paper)] px-3 py-2 text-xs font-black uppercase tracking-[.12em]">Buhay na downtown</figcaption>
+            </figure>
+            <div class="price-tag flex flex-col justify-between p-6 md:col-span-5">
+              <span class="display text-5xl text-[var(--market-orange)]">01</span>
+              <div>
+                <h3 class="text-xl font-black uppercase tracking-wide">Mga sariwang produkto</h3>
+                <p class="mt-2 leading-6 text-[var(--muted)]">Sa maagang umaga, mas malinaw ang ritmo ng mga produkto, seafood at wholesale na paggalaw.</p>
+              </div>
+            </div>
+            <figure class="photo-frame relative md:col-span-5">
+              <img src="/images/carbon-market-produce-night.jpg" alt="Mga tindahan sa Carbon Market na may prutas, gulay at ilaw sa gabi" loading="lazy" width="1200" height="800" />
+              <figcaption class="absolute bottom-3 left-3 bg-[var(--market-orange)] px-3 py-2 text-xs font-black uppercase tracking-[.12em]">Kulay ng pamilihan</figcaption>
+            </figure>
+          </div>
+
+          <div class="mt-5 grid gap-5 md:grid-cols-3">
+            <article class="border-2 border-[var(--ink)] p-6">
+              <span class="text-3xl" aria-hidden="true">◈</span>
+              <h3 class="mt-5 text-xl font-black uppercase">Bumili tulad ng lokal</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">Magdala ng kaunting pera at reusable bag. Magtanong ng presyo bago bumili at huwag matakot tumingin sa iba't ibang stall.</p>
+            </article>
+            <article class="border-2 border-[var(--ink)] bg-[var(--leaf)] p-6 text-white">
+              <span class="text-3xl" aria-hidden="true">◇</span>
+              <h3 class="mt-5 text-xl font-black uppercase">Magsuot ng closed shoes</h3>
+              <p class="mt-3 leading-7 text-white/80">Ito ay aktibong public market. Ang ilang daanan ay maaaring basa o puno ng mga delivery cart, lalo na sa abalang oras.</p>
+            </article>
+            <article class="border-2 border-[var(--ink)] bg-[var(--market-orange)] p-6">
+              <span class="text-3xl" aria-hidden="true">✦</span>
+              <h3 class="mt-5 text-xl font-black uppercase">Isama sa heritage walk</h3>
+              <p class="mt-3 leading-7 text-[var(--ink-soft)]">Pagkatapos ng pamilihan, madaling ituloy patungong Magellan’s Cross, Basilica at Fort San Pedro.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="plan" class="border-y-2 border-[var(--ink)] bg-[var(--ink)] text-[var(--paper)]">
+        <div class="shell section-pad">
+          <div class="grid gap-12 lg:grid-cols-[.7fr_1.3fr]">
+            <div class="lg:sticky lg:top-28 lg:self-start">
+              <p class="kicker !text-[var(--market-orange)]">Praktikal na gabay</p>
+              <h2 class="display mt-5 text-5xl leading-[.9] sm:text-7xl">Bago ka pumasok</h2>
+              <p class="mt-6 max-w-md leading-7 text-white/65">Ang Carbon ay isang working market. Ang pinakamagandang plano ay flexible: piliin ang oras, alamin ang iyong transportasyon, at iwanan ang sobrang schedule.</p>
+            </div>
+
+            <div class="grid gap-5 sm:grid-cols-2">
+              <article class="border border-white/25 bg-white/[.05] p-6 sm:col-span-2">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="text-xs font-black uppercase tracking-[.18em] text-[var(--market-orange)]">Gastos / Babayaran</p>
+                    <h3 class="display mt-2 text-4xl">Walang entrance fee</h3>
+                  </div>
+                  <span class="display text-5xl text-white/20">₱0</span>
+                </div>
+                <p class="mt-4 max-w-2xl leading-7 text-white/68">Libre ang pagpasok sa public market. Maghanda lamang ng budget para sa iyong bibilhin, pagkain, pamasahe at paradahan kung magdadala ka ng sasakyan.</p>
+              </article>
+
+              <article class="border border-white/25 bg-white/[.05] p-6">
+                <p class="text-xs font-black uppercase tracking-[.18em] text-[var(--market-orange)]">Pinakamagandang oras</p>
+                <h3 class="mt-3 text-2xl font-black">Maagang umaga</h3>
+                <p class="mt-3 leading-7 text-white/65">Para sa mga sariwang produkto, mas malamig na temperatura at pinakatotoong ritmo ng wholesale-market.</p>
+                <div class="mt-5 border-t border-white/20 pt-5">
+                  <h3 class="text-lg font-black">Huling hapon</h3>
+                  <p class="mt-2 text-sm leading-6 text-white/65">Para sa mga food stop, ilaw ng lungsod at mas relaks na paglalakad pagkatapos ng init ng tanghali.</p>
+                </div>
+              </article>
+
+              <article class="border border-white/25 bg-white/[.05] p-6">
+                <p class="text-xs font-black uppercase tracking-[.18em] text-[var(--market-orange)]">Tagal</p>
+                <h3 class="display mt-3 text-5xl">1–3 oras</h3>
+                <p class="mt-3 leading-7 text-white/65">Sapat para umikot, kumain at tumingin sa buhay ng pamilihan. Gawin itong kalahating araw kung isasama ang heritage loop.</p>
+              </article>
+
+              <article class="border border-white/25 bg-white/[.05] p-6 sm:col-span-2">
+                <p class="text-xs font-black uppercase tracking-[.18em] text-[var(--market-orange)]">Paradahan</p>
+                <div class="mt-3 grid gap-5 md:grid-cols-[.7fr_1.3fr]">
+                  <h3 class="display text-4xl">Sa loob ng Carbon district</h3>
+                  <div>
+                    <p class="leading-7 text-white/68">May paradahan sa muling binuong Carbon area at malapit sa Pusô Village. Dahil sa patuloy na redevelopment, maaaring magbago ang entry points at available na slots.</p>
+                    <p class="mt-3 text-sm font-bold text-[var(--market-orange)]">Tip: Sundin ang opisyal na parking signs at marshals; huwag umasa sa mga lumang online route screenshot.</p>
+                  </div>
+                </div>
+              </article>
+
+              <article class="border border-white/25 bg-white/[.05] p-6 sm:col-span-2">
+                <p class="text-xs font-black uppercase tracking-[.18em] text-[var(--market-orange)]">Oras ng operasyon</p>
+                <h3 class="mt-3 text-2xl font-black">Magkakaiba depende sa zone at stall</h3>
+                <p class="mt-3 leading-7 text-white/65">Ang mga public listing ay karaniwang nagpapakita ng operasyon hanggang sa gabi, ngunit ang mga produce, retail at food stalls ay hindi magkakapareho ng opening/closing time. Kung may partikular kang tindahang balak puntahan, i-check ito sa araw ng iyong pagbisita.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="transport" class="section-pad market-grid border-b-2 border-[var(--ink)]">
+        <div class="shell">
+          <div class="grid gap-12 lg:grid-cols-[.75fr_1.25fr]">
+            <div>
+              <p class="kicker">Detalyadong transportasyon</p>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Pagdating sa Carbon</h2>
+              <p class="mt-6 max-w-md leading-7 text-[var(--muted)]">Huwag kabisaduhin ang mga lumang jeepney route code. Ang trapiko sa downtown at redevelopment ay maaaring magpabago sa daanan; mas matatag ang pagsakay na nakabatay sa destinasyon.</p>
+            </div>
+
+            <div class="space-y-0">
+              <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-9">
+                <div class="z-10 grid size-8 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--market-orange)] text-xs font-black">A</div>
+                <div>
+                  <h3 class="text-xl font-black">Mula Basilica / Magellan’s Cross</h3>
+                  <p class="mt-2 leading-7 text-[var(--muted)]">Maglakad patungong Carbon district. Ito ang pinakamadaling pagsasama kung naghihi-heritage walk ka sa downtown.</p>
+                </div>
+              </article>
+              <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-9">
+                <div class="z-10 grid size-8 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--paper)] text-xs font-black">B</div>
+                <div>
+                  <h3 class="text-xl font-black">Mula Pier 1</h3>
+                  <p class="mt-2 leading-7 text-[var(--muted)]">Taxi/Grab ang pinakamadali kung may mabigat na bagahe. Kung magaan ang dala, maaari mong isama ang Plaza Independencia at Fort San Pedro sa iyong ruta patungong Carbon.</p>
+                </div>
+              </article>
+              <article class="route-line grid grid-cols-[2rem_1fr] gap-5 pb-9">
+                <div class="z-10 grid size-8 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--paper)] text-xs font-black">C</div>
+                <div>
+                  <h3 class="text-xl font-black">Mula Fuente / Ayala / IT Park / SM City</h3>
+                  <p class="mt-2 leading-7 text-[var(--muted)]">Taxi o Grab para diretso. Sa jeepney, hanapin ang signboard na “Carbon” at kumpirmahin sa drayber o konduktor bago sumakay.</p>
+                </div>
+              </article>
+              <article class="route-line grid grid-cols-[2rem_1fr] gap-5">
+                <div class="z-10 grid size-8 place-items-center rounded-full border-2 border-[var(--ink)] bg-[var(--leaf)] text-xs font-black text-white">D</div>
+                <div>
+                  <h3 class="text-xl font-black">Mula Mactan-Cebu International Airport</h3>
+                  <p class="mt-2 leading-7 text-[var(--muted)]">Taxi o app-based ride ang pinakapraktikal na door-to-door option, lalo na kung first time mo sa downtown. Ilagay ang “Carbon Market, M. C. Briones St” bilang destinasyon.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="food" class="section-pad overflow-hidden">
+        <div class="shell">
+          <div class="grid items-end gap-8 md:grid-cols-2">
+            <div>
+              <p class="kicker">Malapit na pagkain</p>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Kain na walang arte</h2>
+            </div>
+            <p class="text-lg leading-8 text-[var(--muted)]">Ang pinakaangkop na food plan sa Carbon ay hindi pormal na reserbasyon. Maglakad, tingnan kung ano ang mainit at maraming lokal na mamimili, at pumili mula sa mga market stall at kalapit na food hub.</p>
+          </div>
+
+          <div class="mt-12 grid gap-5 lg:grid-cols-[1.15fr_.85fr]">
+            <figure class="photo-frame relative min-h-[430px]">
+              <img src="/images/carbon-market-night.jpg" alt="Carbon Market sa gabi na may mga stall at tao" loading="lazy" width="1400" height="933" />
+              <figcaption class="absolute bottom-4 left-4 max-w-xs bg-[var(--ink)] p-4 text-[var(--paper)]">
+                <strong class="block uppercase tracking-wider text-[var(--market-orange)]">Gana sa pamilihan</strong>
+                <span class="mt-1 block text-sm leading-6 text-white/75">Huwag magmadali; isang meryenda, isang ikot, pagkatapos ay bumalik sa stall na pinakagusto mo.</span>
+              </figcaption>
+            </figure>
+
+            <div class="grid gap-5">
+              <article class="price-tag p-6">
+                <span class="text-xs font-black uppercase tracking-[.18em] text-[var(--tomato)]">01 · Pusô Village</span>
+                <h3 class="mt-3 text-2xl font-black">Food + retail hub sa loob ng Carbon area</h3>
+                <p class="mt-3 leading-7 text-[var(--muted)]">Magandang hinto kung gusto mo ng mas organisadong food choices at upuan habang nananatiling malapit sa pamilihan.</p>
+              </article>
+              <article class="border-2 border-[var(--ink)] bg-[var(--leaf)] p-6 text-white">
+                <span class="text-xs font-black uppercase tracking-[.18em] text-[var(--paper)]/70">02 · Carinderia & stalls</span>
+                <h3 class="mt-3 text-2xl font-black">Puso, ulam at pang-araw-araw na pagkain</h3>
+                <p class="mt-3 leading-7 text-white/78">Hanapin ang abalang stall, tingnan ang mga bagong luto na tray at magtanong kung ano ang bagong luto.</p>
+              </article>
+              <article class="border-2 border-[var(--ink)] bg-[var(--market-orange)] p-6">
+                <span class="text-xs font-black uppercase tracking-[.18em]">03 · Colon / downtown snacks</span>
+                <h3 class="mt-3 text-2xl font-black">Ituloy ang lakad, ituloy ang tikim</h3>
+                <p class="mt-3 leading-7 text-[var(--ink-soft)]">Kung galing ka sa heritage loop, isama ang bakery, ngohiong at mga street-snack stop sa downtown imbes na isang malaking pagkain lang.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="nearby" class="puso-pattern border-y-2 border-[var(--ink)] text-[var(--paper)]">
+        <div class="shell section-pad">
+          <p class="kicker !text-[var(--market-orange)]">Mga kalapit na lugar</p>
+          <div class="mt-5 grid gap-8 lg:grid-cols-[.7fr_1.3fr]">
+            <h2 class="display text-5xl leading-[.92] sm:text-7xl">Gawin itong Old Cebu loop</h2>
+            <div class="grid gap-px border border-white/25 bg-white/25 sm:grid-cols-2">
+              {nearby.map((item, index) => (
+                <article class="bg-[var(--ink)] p-6 transition hover:bg-[var(--ink-soft)]">
+                  <span class="display text-4xl text-[var(--market-orange)]">0{index + 1}</span>
+                  <h3 class="mt-6 text-xl font-black">{item.name}</h3>
+                  <p class="mt-3 leading-7 text-white/64">{item.note}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+          <div class="mt-8 border border-[var(--market-orange)] bg-[var(--market-orange)]/10 p-5 text-sm leading-6 text-white/75">
+            <strong class="text-[var(--market-orange)]">Iminungkahing daloy:</strong> Carbon Market → Magellan’s Cross → Basilica del Santo Niño → Plaza Independencia → Fort San Pedro. Ang aktwal na daanan ay maaaring magbago dahil sa mga roadwork at redevelopment.
+          </div>
+        </div>
+      </section>
+
+      <section id="mapa" class="section-pad border-b-2 border-[var(--ink)]">
+        <div class="shell">
+          <div class="grid gap-8 lg:grid-cols-[.6fr_1.4fr]">
+            <div>
+              <p class="kicker">Mapa at lokasyon</p>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">59 M. C. Briones St</h2>
+              <p class="mt-5 text-lg leading-8 text-[var(--muted)]">Lungsod ng Cebu, 6000 Cebu, Pilipinas</p>
+              <div class="mt-7 price-tag p-5">
+                <p class="text-xs font-black uppercase tracking-[.15em] text-[var(--tomato)]">Sa navigation app</p>
+                <p class="mt-2 font-bold">I-search ang “Carbon Market” at i-check na ang nasa pin ay nasa M. C. Briones St / downtown Cebu.</p>
+              </div>
+            </div>
+            <div class="overflow-hidden border-2 border-[var(--ink)] bg-[var(--ink)] shadow-[8px_8px_0_var(--market-orange)]">
+              <iframe
+                title="Mapa ng Carbon Market, Lungsod ng Cebu"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.629099811328!2d123.8965560769825!3d10.291438889829356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be492180e93%3A0xfca7d1bdb78de28f!2z5Y2h5bCU6YKm5biC5Zy6!5e0!3m2!1sfil!2sph!4v1786413885743!5m2!1sfil!2sph"
+                width="100%"
+                height="520"
+                style="border:0"
+                loading="lazy"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="section-pad market-grid">
+        <div class="shell grid gap-10 lg:grid-cols-[.65fr_1.35fr]">
+          <div>
+            <p class="kicker">FAQ · Madalas itanong</p>
+            <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Bago ka umalis</h2>
+          </div>
+          <div class="border-t-2 border-[var(--ink)]">
+            {faqs.map((item) => (
+              <details class="faq-item group border-b-2 border-[var(--ink)] py-1">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left text-lg font-black marker:hidden">
+                  <span>{item.q}</span>
+                  <span class="faq-plus grid size-8 shrink-0 place-items-center border-2 border-[var(--ink)] bg-[var(--market-orange)] text-2xl leading-none" aria-hidden="true">+</span>
+                </summary>
+                <p class="max-w-2xl pb-6 pr-10 leading-7 text-[var(--muted)]">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+      <div class="shell grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+          <img src="/logo.svg" width="242" height="64" alt="Pamilihang Carbon" class="h-12 w-auto" />
+          <p class="mt-5 max-w-xl text-sm leading-6 text-[var(--muted)]">Ang website na ito ay isang independiyente, hindi opisyal na gabay sa pagbisita at walang opisyal na koneksyon sa Pamahalaan ng Lungsod ng Cebu, pamamahala ng Carbon Market, o mga negosyong binanggit.</p>
+          <p class="mt-3 text-xs leading-5 text-[var(--muted)]">Mga larawan: Megawide Construction Corporation, Chill and Travel, Suroy.ph, at PH Radio Travel Book. Nakatago nang lokal sa site build; tingnan ang README para sa source credits.</p>
+        </div>
+        <div class="text-left md:text-right">
+          <a href="#top" class="inline-flex border-2 border-[var(--ink)] px-4 py-3 text-xs font-black uppercase tracking-[.15em] transition hover:bg-[var(--market-orange)]">Bumalik sa itaas ↑</a>
+          <p class="mt-4 text-xs font-bold uppercase tracking-[.12em] text-[var(--muted)]">Lungsod ng Cebu · Pilipinas</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
