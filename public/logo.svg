@@ -1,0 +1,11 @@
+<svg width="242" height="64" viewBox="0 0 242 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+  <title id="t">Pamilihang Carbon</title>
+  <desc id="d">A woven puso rice symbol paired with the Carbon Market name.</desc>
+  <g transform="translate(4 3)">
+    <path d="M28 2 52 28 28 58 4 28 28 2Z" fill="#F0A23A" stroke="#15271F" stroke-width="3"/>
+    <path d="M28 5 16 28 28 55M28 5l12 23-12 27M7 28h42M15 15l26 27M41 15 15 42" stroke="#15271F" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M25 1 18 9M31 1l8 9" stroke="#5F7A4B" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <text x="70" y="27" fill="#15271F" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800" letter-spacing="1">CARBON</text>
+  <text x="71" y="47" fill="#5A554A" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700" letter-spacing="2.2">PAMILIHAN · SUGBO</text>
+</svg>
