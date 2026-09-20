@@ -629,14 +629,60 @@ const faqSchema = {
           </div>
         </div>
       </section>
-    </main>
 
-    <footer class="border-t-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+      <section id="sources" class="section-pad border-t-2 border-[var(--ink)] bg-[var(--paper)]">
+        <div class="shell">
+          <p class="kicker">Mga pinagmulan</p>
+          <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">Sources &amp; References</h2>
+          <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">Mga pinagmulan ng impormasyon sa Carbon Market</h3>
+
+          <div class="mt-10 grid gap-px border-2 border-[var(--ink)] bg-[var(--ink)] md:grid-cols-2">
+            <article class="bg-[var(--paper)] p-6">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">评价 · 同步时间 {ratingSyncedAt}</p>
+              <h3 class="mt-3 text-lg font-black">Google Maps user reviews</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">同步自 Google 地图用户评价，同步时间 {ratingSyncedAt}；版权归原作者与 Google 地图所有</p>
+              <a class="mt-4 inline-flex items-center gap-2 text-sm font-black uppercase tracking-[.12em] underline decoration-[var(--market-orange)] decoration-2 underline-offset-4" href={mapsShareUrl} target="_blank" rel="noopener noreferrer nofollow">在谷歌地图查看全部评价 <span aria-hidden="true">↗</span></a>
+            </article>
+
+            <article class="bg-[var(--paper)] p-6">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Lokasyon at oras</p>
+              <h3 class="mt-3 text-lg font-black">Google Maps listing ng Carbon Market</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">59 M. C. Briones St, Lungsod ng Cebu, 6000 Cebu, Philippines · Plus code 7VRX+HM Cebu City. Ang oras ng operasyon at kategorya (Market) ay mula sa public listing.</p>
+              <a class="mt-4 inline-flex items-center gap-2 text-sm font-black uppercase tracking-[.12em] underline decoration-[var(--market-orange)] decoration-2 underline-offset-4" href={mapsShareUrl} target="_blank" rel="noopener noreferrer nofollow">Buksan ang Google Maps <span aria-hidden="true">↗</span></a>
+            </article>
+
+            <article class="bg-[var(--paper)] p-6">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Opisyal na pinagmulan</p>
+              <h3 class="mt-3 text-lg font-black">Pamahalaan ng Lungsod ng Cebu</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">Para sa opisyal na anunsyo ng lungsod, traffic advisories at mga update sa redevelopment ng Carbon district.</p>
+              <a class="mt-4 inline-flex items-center gap-2 text-sm font-black uppercase tracking-[.12em] underline decoration-[var(--market-orange)] decoration-2 underline-offset-4" href={govTourismUrl} target="_blank" rel="noopener noreferrer">cebucity.gov.ph <span aria-hidden="true">↗</span></a>
+            </article>
+
+            <article class="bg-[var(--paper)] p-6">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Opisyal na turismo</p>
+              <h3 class="mt-3 text-lg font-black">Philippines Department of Tourism</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">National tourism portal para sa rehiyonal na gabay, travel advisories at impormasyon sa destinasyon sa Central Visayas.</p>
+              <a class="mt-4 inline-flex items-center gap-2 text-sm font-black uppercase tracking-[.12em] underline decoration-[var(--market-orange)] decoration-2 underline-offset-4" href={nationalTourismUrl} target="_blank" rel="noopener noreferrer">tourism.gov.ph <span aria-hidden="true">↗</span></a>
+            </article>
+
+            <article class="bg-[var(--paper)] p-6 md:col-span-2">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Mga larawan</p>
+              <h3 class="mt-3 text-lg font-black">Photo credits</h3>
+              <p class="mt-3 leading-7 text-[var(--muted)]">Megawide Construction Corporation, Chill and Travel, Suroy.ph, at PH Radio Travel Book. Nakatago nang lokal sa site build; tingnan ang README para sa source credits.</p>
+            </article>
+          </div>
+
+          <p class="mt-6 max-w-3xl text-xs leading-5 text-[var(--muted)]">Ang website na ito ay isang independiyente, hindi opisyal na gabay sa pagbisita. Ang rating at mga review ay mula sa Google Maps at hindi inaangkin bilang sarili; ang lahat ng Google link ay nananatiling nakaturo sa opisyal na listing.</p>
+        </div>
+      </section>
+
+      <footer class="border-t-2 border-[var(--ink)] bg-[var(--paper-deep)]">
       <div class="shell grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
         <div>
           <img src="/logo.svg" width="242" height="64" alt="Pamilihang Carbon" class="h-12 w-auto" />
           <p class="mt-5 max-w-xl text-sm leading-6 text-[var(--muted)]">Ang website na ito ay isang independiyente, hindi opisyal na gabay sa pagbisita at walang opisyal na koneksyon sa Pamahalaan ng Lungsod ng Cebu, pamamahala ng Carbon Market, o mga negosyong binanggit.</p>
           <p class="mt-3 text-xs leading-5 text-[var(--muted)]">Mga larawan: Megawide Construction Corporation, Chill and Travel, Suroy.ph, at PH Radio Travel Book. Nakatago nang lokal sa site build; tingnan ang README para sa source credits.</p>
+          <p class="mt-3 text-xs leading-5 text-[var(--muted)]">同步自 Google 地图用户评价，同步时间 {ratingSyncedAt}；版权归原作者与 Google 地图所有</p>
         </div>
         <div class="text-left md:text-right">
           <a href="#top" class="inline-flex border-2 border-[var(--ink)] px-4 py-3 text-xs font-black uppercase tracking-[.15em] transition hover:bg-[var(--market-orange)]">Bumalik sa itaas ↑</a>
