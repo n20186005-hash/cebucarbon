@@ -36,6 +36,14 @@ const nearby = [
 
 const faqs = [
   {
+    q: 'Saan matatagpuan ang Carbon Market?',
+    a: 'Ang Carbon Market (Pamilihang Carbon) ay matatagpuan sa 59 M. C. Briones St, Lungsod ng Cebu, 6000 Cebu, Philippines. Ang plus code nito ay 7VRX+HM Cebu City, at nasa downtown district ito malapit sa Magellan’s Cross at Basilica Minore del Santo Niño.'
+  },
+  {
+    q: 'Ano ang kasaysayan at kahalagahan ng Carbon Market?',
+    a: 'Ang Carbon ay isa sa mga pinakamatandang public market sa Cebu at matagal nang sentro ng wholesale at retail sa downtown. Ang pangalan nito ay karaniwang ipinapaliwanag na nagmula sa dating depot ng uling (carbon). Patuloy itong muling binubuo, ngunit nananatili itong pang-araw-araw na pamilihan ng mga Cebuano.'
+  },
+  {
     q: 'May entrance fee ba sa Carbon Market?',
     a: 'Wala. Libre ang pagpasok sa pamilihan. Babayaran mo lang ang iyong bibilhin, pagkain, transportasyon at iba pang personal na gastos.'
   },
@@ -64,9 +72,20 @@ const faqs = [
 const attractionSchema = {
   '@context': 'https://schema.org',
   '@type': ['TouristAttraction', 'LocalBusiness'],
+  '@id': `${siteUrl}/#attraction`,
   name: 'Carbon Market',
-  alternateName: 'Pamilihang Carbon',
-  description: pageDescription,
+  alternateName: ['Pamilihang Carbon', 'Cebu City Carbon Market'],
+  description:
+    'Comprehensive visitor guide to Carbon Market (Pamilihang Carbon) in Cebu City, Cebu, Philippines.',
+  url: canonical,
+  image: [
+    `${siteUrl}/images/carbon-market-hero.jpg`,
+    `${siteUrl}/images/carbon-market-aerial.jpg`,
+    `${siteUrl}/images/carbon-market-night.jpg`,
+    `${siteUrl}/images/carbon-market-produce-night.jpg`,
+  ],
+  hasMap: mapsShareUrl,
+  sameAs: [mapsShareUrl, govTourismUrl],
   address: {
     '@type': 'PostalAddress',
     streetAddress: '59 M. C. Briones St',
@@ -89,15 +108,8 @@ const attractionSchema = {
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '00:00', closes: '15:30' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '00:00', closes: '19:00' },
   ],
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: 3.3,
-    bestRating: 5,
-  },
   isAccessibleForFree: true,
   priceRange: 'Libre ang pagpasok',
-  ...(canonical ? { url: canonical } : {}),
-  ...(socialImage ? { image: socialImage } : {}),
 };
 
 const faqSchema = {
@@ -124,22 +136,35 @@ const faqSchema = {
     <meta name="description" content={pageDescription} />
     <meta name="theme-color" content="#15271f" />
     <meta name="color-scheme" content="light" />
-    {canonical && <link rel="canonical" href={canonical} />}
+    <meta name="geo.region" content="PH-CEB" />
+    <meta name="geo.placename" content="Cebu City, Cebu, Philippines" />
+    <meta name="ICBM" content="10.2914389, 123.899131" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="ceb" href={`${siteUrl}/`} />
+    <link rel="alternate" hreflang="fil" href={`${siteUrl}/fil/`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`} />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={pageDescription} />
+    <meta property="og:site_name" content="Pamilihang Carbon" />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:locale" content="fil_PH" />
-    {canonical && <meta property="og:url" content={canonical} />}
-    {socialImage && <meta property="og:image" content={socialImage} />}
-    <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
-    <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:description" content={pageDescription} />
-    {socialImage && <meta name="twitter:image" content={socialImage} />}
+    <meta property="og:locale:alternate" content="ceb_PH" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:alt" content={socialImageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={socialImage} />
+    <meta name="twitter:image:alt" content={socialImageAlt} />
     <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="icon" href="/icons/favicon-16.png" sizes="16x16" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" sizes="180x180" />
     <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pamilihang Carbon" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <script type="application/ld+json" set:html={JSON.stringify(attractionSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
@@ -148,6 +173,13 @@ const faqSchema = {
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-HXM22WWPKP');
+    </script>
+    <script is:inline>
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {});
+        });
+      }
     </script>
   </head>
   <body>
@@ -158,11 +190,12 @@ const faqSchema = {
         <a href="#top" aria-label="Pamilihang Carbon — bumalik sa itaas" class="shrink-0">
           <img src="/logo.svg" width="242" height="64" alt="Pamilihang Carbon" class="h-12 w-auto sm:h-13" />
         </a>
-        <nav aria-label="Pangunahing nabigasyon" class="hidden items-center gap-6 text-[13px] font-extrabold uppercase tracking-[.13em] lg:flex">
-          <a class="nav-link" href="#experience">Karanasan</a>
+        <nav aria-label="Pangunahing nabigasyon" class="hidden items-center gap-5 text-[13px] font-extrabold uppercase tracking-[.13em] lg:flex">
+          <a class="nav-link" href="#about">Tungkol</a>
           <a class="nav-link" href="#plan">Plano</a>
           <a class="nav-link" href="#food">Pagkain</a>
           <a class="nav-link" href="#nearby">Malapit</a>
+          <a class="nav-link" href="#reviews">Rebyu</a>
           <a class="nav-link" href="#faq">FAQ</a>
         </nav>
         <div class="flex items-center gap-2">
@@ -179,8 +212,9 @@ const faqSchema = {
       <section id="top" class="market-grid relative overflow-hidden border-b-2 border-[var(--ink)]">
         <div class="shell grid min-h-[calc(100vh-76px)] items-stretch lg:grid-cols-[.92fr_1.08fr]">
           <div class="relative z-10 flex flex-col justify-center py-14 lg:pr-12 lg:py-20">
-            <p class="kicker">Lungsod ng Cebu · Sugbo</p>
-            <h1 class="display mt-6 max-w-[8ch] text-[clamp(4.7rem,11vw,9.8rem)] leading-[.78]">Carbon Market</h1>
+            <p class="kicker">Lungsod ng Cebu · Sugbo · Philippines</p>
+            <h1 class="display mt-6 max-w-[11ch] text-[clamp(3.4rem,8vw,7.2rem)] leading-[.8]">Carbon Market <span class="block text-[var(--market-orange)]">(Cebu City)</span></h1>
+            <p class="mt-4 text-sm font-black uppercase tracking-[.16em] text-[var(--muted)]">Pamilihang Carbon · 59 M. C. Briones St, Lungsod ng Cebu, 6000 Cebu, Philippines</p>
             <div class="mt-7 max-w-xl border-l-[5px] border-[var(--market-orange)] pl-5 text-lg leading-8 text-[var(--ink-soft)] sm:text-xl">
               Hindi ito lugar na titingnan lamang. Ito ay isang <strong>buhay na pamilihan</strong> — mga sariwang produkto, tinig ng mga tindero, puso at ulam, at pang-araw-araw na buhay ng lumang Cebu.
             </div>
@@ -192,7 +226,7 @@ const faqSchema = {
           </div>
 
           <div class="relative min-h-[550px] border-t-2 border-[var(--ink)] lg:border-l-2 lg:border-t-0">
-            <img src="/images/carbon-market-hero.jpg" alt="Tanawin sa gabi ng Carbon Market na puno ng mga bisita at ilaw ng pamilihan" width="1400" height="934" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover" />
+            <img src="/images/carbon-market-hero.jpg" alt="Carbon Market - Main view in Cebu City, Philippines" width="1400" height="934" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-[rgba(21,39,31,.72)] via-transparent to-[rgba(21,39,31,.15)]"></div>
             <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
               <div class="max-w-sm bg-[var(--paper)] p-4 shadow-[5px_5px_0_var(--market-orange)]">
@@ -216,12 +250,57 @@ const faqSchema = {
         </div>
       </section>
 
+      <section id="about" class="section-pad border-b-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+        <div class="shell grid gap-10 lg:grid-cols-[.75fr_1.25fr]">
+          <div>
+            <p class="kicker">Tungkol sa Carbon</p>
+            <h2 class="display mt-5 text-5xl leading-[.92] sm:text-6xl">About Carbon Market</h2>
+            <p class="mt-4 text-lg font-black uppercase tracking-[.1em] text-[var(--tomato)]">Pamilihang Carbon · Lungsod ng Cebu</p>
+            <nav aria-label="Breadcrumb" class="mt-6 text-xs font-bold uppercase tracking-[.14em] text-[var(--muted)]">
+              <ol class="flex flex-wrap items-center gap-2">
+                <li>Carbon Market</li><li aria-hidden="true">→</li>
+                <li>Cebu City</li><li aria-hidden="true">→</li>
+                <li>Cebu</li><li aria-hidden="true">→</li>
+                <li>Philippines</li>
+              </ol>
+            </nav>
+          </div>
+          <div>
+            <p class="text-lg leading-8 text-[var(--ink-soft)]">
+              Welcome to <strong>Carbon Market</strong>, widely recognized as the central <strong>Pamilihang Carbon</strong>. Located in the heart of <strong>Cebu City</strong>, <strong>Cebu</strong>, <strong>Philippines</strong>, this destination serves as a primary hub for travelers visiting the region.
+            </p>
+            <p class="mt-5 leading-8 text-[var(--muted)]">
+              Sa Filipino, “Pamilihang Carbon” at “Carbon Market” ay iisang lugar din: ang pangunahing public market ng downtown Cebu. Dito nagtatagpo ang wholesale na produkto, pang-araw-araw na pamimili ng mga lokal, pagkaing pankalye at mga heritage landmark — kaya natural itong simulan ng isang Old Cebu walking loop.
+            </p>
+            <dl class="mt-8 grid gap-px border-2 border-[var(--ink)] bg-[var(--ink)] sm:grid-cols-2">
+              <div class="bg-[var(--paper)] p-5">
+                <dt class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Opisyal na pangalan</dt>
+                <dd class="mt-2 font-bold">Carbon Market · Pamilihang Carbon</dd>
+              </div>
+              <div class="bg-[var(--paper)] p-5">
+                <dt class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Kategorya</dt>
+                <dd class="mt-2 font-bold">Market · Public market</dd>
+              </div>
+              <div class="bg-[var(--paper)] p-5">
+                <dt class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Address</dt>
+                <dd class="mt-2 font-bold">59 M. C. Briones St, Lungsod ng Cebu, 6000 Cebu, Philippines</dd>
+              </div>
+              <div class="bg-[var(--paper)] p-5">
+                <dt class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">Plus code</dt>
+                <dd class="mt-2 font-bold">7VRX+HM Cebu City, Cebu, Philippines</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
       <section id="experience" class="section-pad overflow-hidden">
         <div class="shell">
           <div class="grid items-end gap-8 lg:grid-cols-[.8fr_1.2fr]">
             <div>
               <p class="kicker">Karanasan sa Carbon</p>
-              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Pamilihan muna. Tourist spot pangalawa.</h2>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">About Carbon Market</h2>
+              <h3 class="mt-4 text-2xl font-black uppercase tracking-wide text-[var(--tomato)]">Pamilihan muna. Tourist spot pangalawa.</h3>
             </div>
             <p class="max-w-2xl text-lg leading-8 text-[var(--muted)] lg:justify-self-end">Ang Carbon ay isa sa mga pinakakilalang public market sa Cebu. Ang ganda nito ay nasa tunay na galaw ng lungsod: prutas at gulay, isda, karne, dry goods, handicrafts at pagkain — hindi curated display, kundi pang-araw-araw na pagbili at pagbebenta.</p>
           </div>
@@ -269,7 +348,8 @@ const faqSchema = {
           <div class="grid gap-12 lg:grid-cols-[.7fr_1.3fr]">
             <div class="lg:sticky lg:top-28 lg:self-start">
               <p class="kicker !text-[var(--market-orange)]">Praktikal na gabay</p>
-              <h2 class="display mt-5 text-5xl leading-[.9] sm:text-7xl">Bago ka pumasok</h2>
+              <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">Location &amp; How to Visit Carbon Market in Cebu City</h2>
+              <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--market-orange)]">Bago ka pumasok</h3>
               <p class="mt-6 max-w-md leading-7 text-white/65">Ang Carbon ay isang working market. Ang pinakamagandang plano ay flexible: piliin ang oras, alamin ang iyong transportasyon, at iwanan ang sobrang schedule.</p>
             </div>
 
@@ -327,7 +407,8 @@ const faqSchema = {
           <div class="grid gap-12 lg:grid-cols-[.75fr_1.25fr]">
             <div>
               <p class="kicker">Detalyadong transportasyon</p>
-              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Pagdating sa Carbon</h2>
+              <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">How to Get to Carbon Market in Cebu City</h2>
+              <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">Pagdating sa Carbon</h3>
               <p class="mt-6 max-w-md leading-7 text-[var(--muted)]">Huwag kabisaduhin ang mga lumang jeepney route code. Ang trapiko sa downtown at redevelopment ay maaaring magpabago sa daanan; mas matatag ang pagsakay na nakabatay sa destinasyon.</p>
             </div>
 
@@ -370,7 +451,8 @@ const faqSchema = {
           <div class="grid items-end gap-8 md:grid-cols-2">
             <div>
               <p class="kicker">Malapit na pagkain</p>
-              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">Kain na walang arte</h2>
+              <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">Food &amp; Eating Near Carbon Market</h2>
+              <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">Kain na walang arte</h3>
             </div>
             <p class="text-lg leading-8 text-[var(--muted)]">Ang pinakaangkop na food plan sa Carbon ay hindi pormal na reserbasyon. Maglakad, tingnan kung ano ang mainit at maraming lokal na mamimili, at pumili mula sa mga market stall at kalapit na food hub.</p>
           </div>
@@ -409,7 +491,10 @@ const faqSchema = {
         <div class="shell section-pad">
           <p class="kicker !text-[var(--market-orange)]">Mga kalapit na lugar</p>
           <div class="mt-5 grid gap-8 lg:grid-cols-[.7fr_1.3fr]">
-            <h2 class="display text-5xl leading-[.92] sm:text-7xl">Gawin itong Old Cebu loop</h2>
+            <div>
+              <h2 class="display text-4xl leading-[.95] sm:text-5xl">Landmarks &amp; Attractions Around Carbon Market</h2>
+              <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--market-orange)]">Gawin itong Old Cebu loop</h3>
+            </div>
             <div class="grid gap-px border border-white/25 bg-white/25 sm:grid-cols-2">
               {nearby.map((item, index) => (
                 <article class="bg-[var(--ink)] p-6 transition hover:bg-[var(--ink-soft)]">
