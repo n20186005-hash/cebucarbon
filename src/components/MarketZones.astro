@@ -1,0 +1,54 @@
+---
+import { getContent, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getContent(lang).zones;
+---
+
+<section id="zones" class="section-pad border-b-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+  <div class="shell">
+    <div class="grid items-end gap-8 lg:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="kicker">{t.kicker}</p>
+        <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">{t.title}</h2>
+        <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">{t.subtitle}</h3>
+      </div>
+      <p class="text-sm leading-6 text-[var(--muted)]">{t.intro}</p>
+    </div>
+
+    <div class="mt-10 grid gap-px border-2 border-[var(--ink)] bg-[var(--ink)] lg:grid-cols-2">
+      {
+        t.items.map((item) => (
+          <article class="bg-[var(--paper)] p-6">
+            <div class="flex items-start gap-4">
+              <span class="display text-3xl leading-none text-[var(--market-orange)]" aria-hidden="true">{item.icon}</span>
+              <h3 class="text-lg font-black uppercase leading-tight">{item.name}</h3>
+            </div>
+            <dl class="mt-5 space-y-3 text-sm leading-6">
+              <div>
+                <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.findLabel}</dt>
+                <dd class="mt-1 text-[var(--muted)]">{item.find}</dd>
+              </div>
+              <div>
+                <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.bestLabel}</dt>
+                <dd class="mt-1 text-[var(--muted)]">{item.best}</dd>
+              </div>
+              <div>
+                <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.tipLabel}</dt>
+                <dd class="mt-1 text-[var(--muted)]">{item.tip}</dd>
+              </div>
+            </dl>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 max-w-3xl border-2 border-dashed border-[var(--ink)] bg-[var(--paper)] p-5 text-xs leading-5 text-[var(--muted)]">
+      {t.note}
+    </p>
+  </div>
+</section>

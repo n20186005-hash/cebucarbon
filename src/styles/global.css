@@ -201,6 +201,57 @@ a {
   color: var(--market-orange);
 }
 
+.season-table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+}
+
+.season-table th,
+.season-table td {
+  border: 2px solid var(--ink);
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.season-table thead th {
+  background: var(--tomato);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.season-table tbody th {
+  background: var(--paper-deep);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  white-space: nowrap;
+}
+
+.season-table tbody tr:nth-child(even) td {
+  background: var(--paper-deep);
+}
+
+.service-card {
+  transition: transform .18s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    transition: none;
+  }
+}
+
 .faq-item[open] summary .faq-plus {
   transform: rotate(45deg);
 }

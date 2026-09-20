@@ -1,0 +1,385 @@
+---
+import { getContent, type Lang } from '../data/content';
+import { weatherLabel, weatherLabelMap } from '../data/weather-codes';
+import { weatherRequestUrl } from '../lib/weather-config';
+import { ADVICE_GROUPS, buildAdvice, type AdviceInput } from '../lib/weather-advice';
+import { getWeather } from '../lib/weather';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getContent(lang).weather;
+const weekdayNames = getContent(lang).weekdays;
+const snapshot = await getWeather();
+
+function round(value: number | null): string {
+  return value === null ? '—' : String(Math.round(value));
+}
+
+function describe(code: number): string {
+  return weatherLabel(code)[lang];
+}
+
+function iconFor(code: number): string {
+  return weatherLabel(code).icon;
+}
+
+function dayName(date: string, weekdayIndex: number, index: number): string {
+  if (index === 0) return getContent(lang).weather.dayNow;
+  if (index === 1) return getContent(lang).weather.dayTomorrow;
+  return weekdayNames[weekdayIndex] ?? date;
+}
+
+function shortDate(date: string): string {
+  return date.length >= 10 ? date.slice(5).replace('-', '/') : date;
+}
+
+const current = snapshot?.current ?? null;
+const days = snapshot?.days.slice(0, 7) ?? [];
+const today = days[0] ?? null;
+const todayPop = today?.precipitationProbability ?? null;
+const currentCode = current?.code ?? today?.code ?? 0;
+const wetness = weatherLabel(currentCode).wetness;
+
+const adviceInput: AdviceInput = {
+  code: currentCode,
+  temp: current?.temp ?? null,
+  feelsLike: current?.feelsLike ?? today?.feelsMax ?? null,
+  tempMax: today?.tempMax ?? null,
+  tempMin: today?.tempMin ?? null,
+  humidity: current?.humidity ?? null,
+  wind: current?.wind ?? today?.windMax ?? null,
+  gust: current?.gust ?? today?.gustMax ?? null,
+  pop: todayPop,
+  precip: today?.precipitation ?? null,
+  precipNow: current?.precipitation ?? null,
+  uv: today?.uvIndexMax ?? null,
+  wetness,
+};
+
+const advice = buildAdvice(adviceInput);
+const adviceText = (id: string): string => (t.advice as Record<string, string>)[id] ?? '';
+
+const umbrellaState =
+  (todayPop !== null && todayPop >= 60) || wetness === 'wet'
+    ? 'yes'
+    : (todayPop !== null && todayPop >= 30) || wetness === 'light'
+      ? 'maybe'
+      : 'no';
+
+const umbrellaText =
+  umbrellaState === 'yes' ? t.umbrellaYes : umbrellaState === 'maybe' ? t.umbrellaMaybe : t.umbrellaNo;
+
+const observed = snapshot?.observedAt
+  ? `${snapshot.observedAt.slice(0, 10)} · ${snapshot.observedAt.slice(11, 16)}`
+  : null;
+---
+
+<section id="weather" class="section-pad border-b-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+  <div class="shell">
+    <div class="grid items-end gap-8 lg:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="kicker">{getContent(lang).weather.kicker}</p>
+        <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">{t.title}</h2>
+        <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">{t.subtitle}</h3>
+      </div>
+      <p class="text-sm leading-6 text-[var(--muted)]">
+        {t.placeNote} · {t.note}
+      </p>
+    </div>
+
+    {
+      snapshot ? (
+        <div class="mt-10" data-weather-root data-weather-lang={lang}>
+          <div
+            data-wx="risk-box"
+            hidden={advice.risk.length === 0}
+            class="mb-6 border-2 border-[var(--ink)] bg-[var(--tomato)] p-5 text-[var(--paper)] shadow-[6px_6px_0_var(--ink)]"
+          >
+            <p class="text-xs font-black uppercase tracking-[.16em]">{t.groupRisk}</p>
+            <ul class="mt-3 space-y-2">
+              {ADVICE_GROUPS.risk.map((id) => (
+                <li
+                  data-advice={id}
+                  hidden={!advice.risk.includes(id)}
+                  class="text-sm font-bold leading-6"
+                >
+                  <span aria-hidden="true">⚠ </span>{adviceText(id)}
+                </li>
+              ))}
+            </ul>
+            <p class="mt-3 text-xs leading-5 text-[var(--paper)]/85">{t.riskHint}</p>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
+            <article class="price-tag p-6 sm:p-8">
+              <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">{t.todayLabel}</p>
+
+              <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-3">
+                <span class="display text-6xl leading-none sm:text-7xl">
+                  <span data-wx="temp">{round(current?.temp ?? null)}</span>{t.unit}
+                </span>
+                <div>
+                  <span class="block text-4xl leading-none" data-wx="icon">{iconFor(currentCode)}</span>
+                  <span class="mt-2 block font-black uppercase tracking-wide" data-wx="desc">{describe(currentCode)}</span>
+                </div>
+              </div>
+
+              <p class="mt-4 text-sm leading-6">
+                <span data-wx="hi">{round(today?.tempMax ?? null)}</span>° / <span data-wx="lo">{round(today?.tempMin ?? null)}</span>° ·
+                {t.summaryUv} <span data-wx="uv">{round(today?.uvIndexMax ?? null)}</span> (<span data-wx="uv-word">{adviceText(advice.uvWord)}</span>) ·
+                {t.summaryWind} <span data-wx="wind-word">{adviceText(advice.windWord)}</span>
+              </p>
+
+              <dl class="mt-7 grid grid-cols-2 gap-px border-2 border-[var(--ink)] bg-[var(--ink)]">
+                <div class="bg-[var(--paper)] p-4">
+                  <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.feelsLabel}</dt>
+                  <dd class="mt-1 font-bold"><span data-wx="feels">{round(current?.feelsLike ?? null)}</span>{t.unit}</dd>
+                </div>
+                <div class="bg-[var(--paper)] p-4">
+                  <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.humidityLabel}</dt>
+                  <dd class="mt-1 font-bold"><span data-wx="humidity">{round(current?.humidity ?? null)}</span>%</dd>
+                </div>
+                <div class="bg-[var(--paper)] p-4">
+                  <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.windLabel}</dt>
+                  <dd class="mt-1 font-bold"><span data-wx="wind">{round(current?.wind ?? null)}</span> km/h</dd>
+                </div>
+                <div class="bg-[var(--paper)] p-4">
+                  <dt class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.rainLabel}</dt>
+                  <dd class="mt-1 font-bold"><span data-wx="pop">{round(todayPop)}</span>%</dd>
+                </div>
+              </dl>
+
+              <p class="mt-5 text-xs leading-5 text-[var(--muted)]">
+                {t.sunriseLabel}: <span data-wx="sunrise">{snapshot.sunrise ?? '—'}</span> ·
+                {t.sunsetLabel}: <span data-wx="sunset">{snapshot.sunset ?? '—'}</span> ·
+                {t.rainTodayLabel}: <span data-wx="rain-today">{round(today?.precipitation ?? null)}</span> mm
+              </p>
+              <p class="mt-2 text-xs leading-5 text-[var(--muted)]">
+                {t.observedLabel}: <span data-wx="updated">{observed}</span>
+              </p>
+            </article>
+
+            <div class="border-2 border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[6px_6px_0_var(--ink)]">
+              <div class="border-2 border-[var(--ink)] bg-[var(--market-orange)] p-5">
+                <p class="text-xs font-black uppercase tracking-[.16em]">{t.umbrellaLabel}</p>
+                <p class="mt-2 font-bold leading-6" data-wx="umbrella">{umbrellaText}</p>
+              </div>
+
+              <div class="mt-6">
+                <p class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.groupOutfit}</p>
+                <ul class="mt-3 space-y-2">
+                  {ADVICE_GROUPS.outfit.map((id) => (
+                    <li data-advice={id} hidden={!advice.outfit.includes(id)} class="text-sm leading-6 text-[var(--muted)]">
+                      <span class="mr-2 text-[var(--market-orange)]" aria-hidden="true">▪</span>{adviceText(id)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="mt-6">
+                <p class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.groupPlan}</p>
+                <ul class="mt-3 space-y-2">
+                  {ADVICE_GROUPS.plan.map((id) => (
+                    <li data-advice={id} hidden={!advice.plan.includes(id)} class="text-sm leading-6 text-[var(--muted)]">
+                      <span class="mr-2 text-[var(--market-orange)]" aria-hidden="true">▪</span>{adviceText(id)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="mt-6">
+                <p class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{t.groupGear}</p>
+                <ul class="mt-3 space-y-2">
+                  {ADVICE_GROUPS.gear.map((id) => (
+                    <li data-advice={id} hidden={!advice.gear.includes(id)} class="text-sm leading-6 text-[var(--muted)]">
+                      <span class="mr-2 text-[var(--market-orange)]" aria-hidden="true">▪</span>{adviceText(id)}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6">
+            <p class="text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">{t.forecastLabel}</p>
+            <ul class="mt-4 grid gap-px border-2 border-[var(--ink)] bg-[var(--ink)]">
+              {days.map((day, index) => (
+                <li class="grid grid-cols-[1.1fr_auto_1fr_auto] items-center gap-3 bg-[var(--paper)] p-4 sm:grid-cols-[1.2fr_auto_1fr_1fr_auto]" data-wx-day={index}>
+                  <span class="text-sm font-black uppercase tracking-wide">{dayName(day.date, day.weekdayIndex, index)} <span class="ml-1 font-normal normal-case tracking-normal text-[var(--muted)]">{shortDate(day.date)}</span></span>
+                  <span class="text-2xl leading-none" data-wx="day-icon">{iconFor(day.code)}</span>
+                  <span class="hidden text-xs leading-4 text-[var(--muted)] sm:block" data-wx="day-desc">{describe(day.code)}</span>
+                  <span class="whitespace-nowrap text-sm font-bold">
+                    <span data-wx="tmax">{round(day.tempMax)}</span>° / <span class="text-[var(--muted)]" data-wx="tmin">{round(day.tempMin)}</span>°
+                    <span class="ml-2 inline-flex items-center gap-1 text-[color:var(--market-orange)]">☂ <span data-wx="day-pop">{round(day.precipitationProbability)}</span>%</span>
+                    <span class="ml-2 inline-flex items-center gap-1 text-[var(--muted)]">≋ <span data-wx="day-wind">{round(day.windMax)}</span> km/h</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <p class="mt-10 max-w-2xl border-2 border-[var(--ink)] bg-[var(--paper)] p-6 text-sm leading-6 text-[var(--muted)]">{t.unavailable}</p>
+      )
+    }
+  </div>
+
+  <script type="application/json" id="weather-code-map" set:html={JSON.stringify(weatherLabelMap())} is:inline></script>
+  <script
+    type="application/json"
+    id="weather-strings"
+    set:html={JSON.stringify({
+      umbrella: {
+        yes: t.umbrellaYes,
+        maybe: t.umbrellaMaybe,
+        no: t.umbrellaNo,
+      },
+      advice: t.advice,
+    })}
+    is:inline
+  ></script>
+</section>
+
+<script>
+  import { weatherRequestUrl } from '../lib/weather-config';
+  import { buildAdvice } from '../lib/weather-advice';
+
+  const root = document.querySelector('[data-weather-root]');
+  const mapElement = document.getElementById('weather-code-map');
+
+  if (root && mapElement) {
+    const labels = JSON.parse(mapElement.textContent || '{}') as Record<
+      string,
+      { icon: string; ceb: string; fil: string; wetness: string }
+    >;
+    const lang = root.getAttribute('data-weather-lang') === 'fil' ? 'fil' : 'ceb';
+
+    const stringsElement = document.getElementById('weather-strings');
+    const dictionary = JSON.parse(stringsElement ? stringsElement.textContent || '{}' : '{}') as {
+      umbrella?: Record<string, string>;
+      advice?: Record<string, string>;
+    };
+    const words = dictionary.advice || {};
+    const umbrellaWords = dictionary.umbrella || {};
+
+    const labelFor = (code: number) =>
+      labels[String(code)] || labels['3'] || { icon: '☁', ceb: '', fil: '', wetness: 'dry' };
+
+    const set = (name: string, value: string | number | null | undefined, scope?: Element | null) => {
+      const host: Element = scope || root;
+      const target = host.querySelector(`[data-wx="${name}"]`);
+      if (target && value !== undefined && value !== null && value !== '') target.textContent = String(value);
+    };
+
+    const round = (value: unknown): string | number =>
+      typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : '—';
+
+    const paint = (input: {
+      code: number;
+      temp: number | null;
+      feelsLike: number | null;
+      tempMax: number | null;
+      tempMin: number | null;
+      humidity: number | null;
+      wind: number | null;
+      gust: number | null;
+      pop: number | null;
+      precip: number | null;
+      precipNow: number | null;
+      uv: number | null;
+      wetness: 'dry' | 'light' | 'wet';
+    }) => {
+      const advice = buildAdvice(input);
+      const active = new Set([...advice.outfit, ...advice.plan, ...advice.gear, ...advice.risk]);
+
+      root.querySelectorAll('[data-advice]').forEach((item) => {
+        const id = item.getAttribute('data-advice') || '';
+        item.hidden = !active.has(id);
+      });
+
+      const box = root.querySelector('[data-wx="risk-box"]');
+      if (box) box.hidden = advice.risk.length === 0;
+
+      set('uv-word', words[advice.uvWord]);
+      set('wind-word', words[advice.windWord]);
+
+      const umbrella = root.querySelector('[data-wx="umbrella"]');
+      if (umbrella) {
+        const pop = input.pop ?? 0;
+        const verdict =
+          pop >= 60 || input.wetness === 'wet'
+            ? 'yes'
+            : pop >= 30 || input.wetness === 'light'
+              ? 'maybe'
+              : 'no';
+        const text = umbrellaWords[verdict];
+        if (text) umbrella.textContent = text;
+      }
+    };
+
+    fetch(weatherRequestUrl())
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (!data || !data.current || !Array.isArray(data.daily?.time)) return;
+
+        const daily = data.daily;
+        const current = data.current;
+        const code = Number(current.weather_code ?? 0);
+        const label = labelFor(code);
+
+        set('temp', round(current.temperature_2m));
+        set('feels', round(current.apparent_temperature));
+        set('humidity', round(current.relative_humidity_2m));
+        set('wind', round(current.wind_speed_10m));
+        set('icon', label.icon);
+        set('desc', label[lang]);
+        set('sunrise', String(daily.sunrise?.[0] || '').slice(11, 16));
+        set('sunset', String(daily.sunset?.[0] || '').slice(11, 16));
+        set('uv', round(daily.uv_index_max?.[0]));
+        set('hi', round(daily.temperature_2m_max?.[0]));
+        set('lo', round(daily.temperature_2m_min?.[0]));
+        set('rain-today', round(daily.precipitation_sum?.[0]));
+
+        const pop = Number(daily.precipitation_probability_max?.[0] ?? 0);
+        set('pop', round(pop));
+
+        paint({
+          code,
+          temp: typeof current.temperature_2m === 'number' ? current.temperature_2m : null,
+          feelsLike: typeof current.apparent_temperature === 'number' ? current.apparent_temperature : null,
+          tempMax: typeof daily.temperature_2m_max?.[0] === 'number' ? daily.temperature_2m_max[0] : null,
+          tempMin: typeof daily.temperature_2m_min?.[0] === 'number' ? daily.temperature_2m_min[0] : null,
+          humidity: typeof current.relative_humidity_2m === 'number' ? current.relative_humidity_2m : null,
+          wind: typeof current.wind_speed_10m === 'number' ? current.wind_speed_10m : null,
+          gust: typeof current.wind_gusts_10m === 'number' ? current.wind_gusts_10m : null,
+          pop,
+          precip: typeof daily.precipitation_sum?.[0] === 'number' ? daily.precipitation_sum[0] : null,
+          precipNow: typeof current.precipitation === 'number' ? current.precipitation : null,
+          uv: typeof daily.uv_index_max?.[0] === 'number' ? daily.uv_index_max[0] : null,
+          wetness: label.wetness === 'wet' || label.wetness === 'light' ? label.wetness : 'dry',
+        });
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        set('updated', stamp);
+
+        root.querySelectorAll('[data-wx-day]').forEach((row) => {
+          const index = Number(row.getAttribute('data-wx-day'));
+          const dayCode = Number(daily.weather_code?.[index] ?? 0);
+          const dayLabel = labelFor(dayCode);
+          set('day-icon', dayLabel.icon, row);
+          set('day-desc', dayLabel[lang], row);
+          set('tmax', round(daily.temperature_2m_max?.[index]), row);
+          set('tmin', round(daily.temperature_2m_min?.[index]), row);
+          set('day-pop', round(daily.precipitation_probability_max?.[index]), row);
+          set('day-wind', round(daily.wind_speed_10m_max?.[index]), row);
+        });
+      })
+      .catch(() => {
+        /* Keep the server-rendered values if the refresh is unavailable. */
+      });
+  }
+</script>

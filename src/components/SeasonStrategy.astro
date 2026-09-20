@@ -1,0 +1,60 @@
+---
+import { getContent, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getContent(lang).seasons;
+---
+
+<section id="seasons" class="section-pad border-b-2 border-[var(--ink)] bg-[var(--paper-deep)]">
+  <div class="shell">
+    <div class="grid items-end gap-8 lg:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="kicker">{t.kicker}</p>
+        <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">{t.title}</h2>
+        <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">{t.subtitle}</h3>
+      </div>
+      <p class="text-sm leading-6 text-[var(--muted)]">{t.basis}</p>
+    </div>
+
+    <div class="mt-10 overflow-x-auto border-2 border-[var(--ink)] bg-[var(--paper)]">
+      <table class="season-table">
+        <thead>
+          <tr>
+            {t.columns.map((column) => <th scope="col">{column}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {
+            t.rows.map((row) => (
+              <tr>
+                <th scope="row">{row.period}</th>
+                <td>{row.climate}</td>
+                <td>{row.supply}</td>
+                <td>{row.crowd}</td>
+                <td>{row.advice}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-8 grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
+      <ul class="space-y-3">
+        {
+          t.notes.map((note) => (
+            <li class="border-l-[4px] border-[var(--market-orange)] pl-4 text-sm leading-6 text-[var(--muted)]">{note}</li>
+          ))
+        }
+      </ul>
+      <div class="border-2 border-[var(--ink)] bg-[var(--market-orange)] p-6">
+        <h3 class="text-lg font-black uppercase">{t.analysisTitle}</h3>
+        <p class="mt-3 text-sm leading-6 text-[var(--ink)]/85">{t.analysisNote}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,5 +1,14 @@
 ---
 import '../styles/global.css';
+import Itineraries from '../components/Itineraries.astro';
+import MarketZones from '../components/MarketZones.astro';
+import ScienceNotes from '../components/ScienceNotes.astro';
+import SeasonStrategy from '../components/SeasonStrategy.astro';
+import Stories from '../components/Stories.astro';
+import TransportGuide from '../components/TransportGuide.astro';
+import VisitorServices from '../components/VisitorServices.astro';
+import WeatherPanel from '../components/WeatherPanel.astro';
+import { getContent } from '../data/content';
 
 const siteOrigin = Astro.site ?? new URL('https://cebucarbon.com');
 const siteUrl = siteOrigin.origin;
@@ -15,10 +24,10 @@ const rating = { value: '4.2', count: 7580, countLabel: '7,580', best: 5 };
 const ratingSyncedAt = '2026 年 9 月';
 const starWidth = `${(Number(rating.value) / rating.best) * 100}%`;
 
-const pageTitle = 'Carbon Market (Cebu City) · Pamilihang Carbon - Visitor Guide & Location';
-const pageDescription = 'Giya sa pagbisita sa Carbon Market (Pamilihang Carbon) sa Cebu City, Cebu, Philippines: lokasyon ug mapa, oras, libre nga pagsulod, duol nga Magellan’s Cross ug Basilica Minore del Santo Niño, transportasyon, parking ug praktikal nga tips.';
-const ogTitle = 'Carbon Market (Pamilihang Carbon) - Cebu City Travel Guide';
-const ogDescription = 'Independent visitor guide to Carbon Market (Pamilihang Carbon) in Cebu City, Cebu, Philippines — location map, opening details, food, transport and travel tips.';
+const pageTitle = 'Carbon Market Cebu: Location, Flower Market & Visitor Guide';
+const pageDescription = 'Carbon Market Cebu visitor guide: location & map on M. C. Briones St, flower market, interim building, food section, hours, jeepney routes and tips.';
+const ogTitle = 'Carbon Market Cebu (Pamilihang Carbon) — Visitor Guide & Location';
+const ogDescription = 'Independent visitor guide to Carbon Market in Cebu City, Philippines: where the flower market is, the interim building, the food section, plus map, hours and transport.';
 
 const highlights = [
   { value: 'Libre', label: 'pagsulod sa merkado' },
@@ -69,6 +78,9 @@ const faqs = [
   },
 ];
 
+const extraFaqs = getContent('ceb').extraFaqs;
+const allFaqs = [...faqs, ...extraFaqs];
+
 const attractionSchema = {
   '@context': 'https://schema.org',
   '@type': ['TouristAttraction', 'LocalBusiness'],
@@ -108,14 +120,34 @@ const attractionSchema = {
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday', opens: '00:00', closes: '15:30' },
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '00:00', closes: '19:00' },
   ],
+  amenityFeature: [
+    { '@type': 'LocationFeatureSpecification', name: 'Public restrooms nearby', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Paid parking nearby', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Food stalls and carinderia on site', value: true },
+    { '@type': 'LocationFeatureSpecification', name: 'Free admission', value: true },
+  ],
   isAccessibleForFree: true,
   priceRange: 'Libre ang pagsulod',
+  containsPlace: getContent('ceb').zones.items.map((zone) => ({
+    '@type': 'Place',
+    name: zone.name,
+    description: zone.find,
+  })),
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Pamilihang Carbon', item: `${siteUrl}/` },
+    { '@type': 'ListItem', position: 2, name: 'Carbon Market Cebu visitor guide', item: canonical },
+  ],
 };
 
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faqs.map((item) => ({
+  mainEntity: allFaqs.map((item) => ({
     '@type': 'Question',
     name: item.q,
     acceptedAnswer: {
@@ -141,6 +173,7 @@ const faqSchema = {
     <meta name="ICBM" content="10.2914389, 123.899131" />
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="ceb" href={`${siteUrl}/`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/`} />
     <link rel="alternate" hreflang="fil" href={`${siteUrl}/fil/`} />
     <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`} />
     <meta property="og:type" content="website" />
@@ -148,6 +181,7 @@ const faqSchema = {
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:locale" content="ceb_PH" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:locale:alternate" content="fil_PH" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={socialImage} />
@@ -167,6 +201,9 @@ const faqSchema = {
     <meta name="mobile-web-app-capable" content="yes" />
     <script type="application/ld+json" set:html={JSON.stringify(attractionSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    <link rel="preload" as="image" href="/images/carbon-market-hero.jpg" fetchpriority="high" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-HXM22WWPKP"></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
@@ -190,11 +227,14 @@ const faqSchema = {
         <a href="#top" aria-label="Pamilihang Carbon — balik sa ibabaw" class="shrink-0">
           <img src="/logo.svg" width="242" height="64" alt="Pamilihang Carbon" class="h-12 w-auto sm:h-13" />
         </a>
-        <nav aria-label="Pangunang nabigasyon" class="hidden items-center gap-5 text-[13px] font-extrabold uppercase tracking-[.13em] lg:flex">
+        <nav aria-label="Pangunang nabigasyon" class="hidden items-center gap-4 text-[12px] font-extrabold uppercase tracking-[.12em] lg:flex">
           <a class="nav-link" href="#about">Mahitungod</a>
-          <a class="nav-link" href="#plan">Pagplano</a>
+          <a class="nav-link" href="#weather">Panahon</a>
+          <a class="nav-link" href="#getting-here">Transportasyon</a>
+          <a class="nav-link" href="#zones">Mga bahin</a>
           <a class="nav-link" href="#food">Pagkaon</a>
           <a class="nav-link" href="#nearby">Duol</a>
+          <a class="nav-link" href="#itineraries">Ruta</a>
           <a class="nav-link" href="#reviews">Rebyu</a>
           <a class="nav-link" href="#faq">FAQ</a>
         </nav>
@@ -213,7 +253,7 @@ const faqSchema = {
         <div class="shell grid min-h-[calc(100vh-76px)] items-stretch lg:grid-cols-[.92fr_1.08fr]">
           <div class="relative z-10 flex flex-col justify-center py-14 lg:pr-12 lg:py-20">
             <p class="kicker">Cebu City · Sugbo · Philippines</p>
-            <h1 class="display mt-6 max-w-[11ch] text-[clamp(3.4rem,8vw,7.2rem)] leading-[.8]">Carbon Market <span class="block text-[var(--market-orange)]">(Cebu City)</span></h1>
+            <h1 class="display mt-6 max-w-[11ch] text-[clamp(3.4rem,8vw,7.2rem)] leading-[.8]">Carbon Market <span class="block text-[var(--market-orange)]">Cebu City</span></h1>
             <p class="mt-4 text-sm font-black uppercase tracking-[.16em] text-[var(--muted)]">Pamilihang Carbon · 59 M. C. Briones St, Cebu City, 6000 Cebu, Philippines</p>
             <div class="mt-7 max-w-xl border-l-[5px] border-[var(--market-orange)] pl-5 text-lg leading-8 text-[var(--ink-soft)] sm:text-xl">
               Dili kini lugar nga tan-awon lang. Kini usa ka <strong>buhing merkado</strong> — preskong abot, tingog sa tindero, puso ug sud-an, ug adlaw-adlaw nga kinabuhi sa karaang Sugbo.
@@ -226,7 +266,7 @@ const faqSchema = {
           </div>
 
           <div class="relative min-h-[550px] border-t-2 border-[var(--ink)] lg:border-l-2 lg:border-t-0">
-            <img src="/images/carbon-market-hero.jpg" alt="Carbon Market - Main view in Cebu City, Philippines" width="1400" height="934" fetchpriority="high" class="absolute inset-0 h-full w-full object-cover" />
+            <img src="/images/carbon-market-hero.jpg" alt="Carbon Market - Main view in Cebu City, Philippines" width="1400" height="934" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-[rgba(21,39,31,.72)] via-transparent to-[rgba(21,39,31,.15)]"></div>
             <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
               <div class="max-w-sm bg-[var(--paper)] p-4 shadow-[5px_5px_0_var(--market-orange)]">
@@ -299,7 +339,7 @@ const faqSchema = {
           <div class="grid items-end gap-8 lg:grid-cols-[.8fr_1.2fr]">
             <div>
               <p class="kicker">Kasinaran sa Carbon</p>
-              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">About Carbon Market</h2>
+              <h2 class="display mt-5 text-5xl leading-[.92] sm:text-7xl">What to Expect at Carbon Market</h2>
               <h3 class="mt-4 text-2xl font-black uppercase tracking-wide text-[var(--tomato)]">Merkado una. Tourist spot ikaduha.</h3>
             </div>
             <p class="max-w-2xl text-lg leading-8 text-[var(--muted)] lg:justify-self-end">Ang Carbon mao ang usa sa labing iladong public markets sa Cebu. Ang kalami niini naa sa tinuod nga lihok sa lungsod: prutas ug utan, isda, karne, dry goods, handicrafts ug pagkaon — dili curated display, kundili adlaw-adlaw nga palit ug baligya.</p>
@@ -402,6 +442,8 @@ const faqSchema = {
         </div>
       </section>
 
+      <WeatherPanel lang="ceb" />
+
       <section id="transport" class="section-pad market-grid border-b-2 border-[var(--ink)]">
         <div class="shell">
           <div class="grid gap-12 lg:grid-cols-[.75fr_1.25fr]">
@@ -445,6 +487,10 @@ const faqSchema = {
           </div>
         </div>
       </section>
+
+      <TransportGuide lang="ceb" />
+      <VisitorServices lang="ceb" />
+      <MarketZones lang="ceb" />
 
       <section id="food" class="section-pad overflow-hidden">
         <div class="shell">
@@ -512,6 +558,9 @@ const faqSchema = {
         </div>
       </section>
 
+      <Itineraries lang="ceb" />
+      <SeasonStrategy lang="ceb" />
+
       <section id="history" class="section-pad border-b-2 border-[var(--ink)] bg-[var(--paper-deep)]">
         <div class="shell grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
           <div>
@@ -539,6 +588,9 @@ const faqSchema = {
           </div>
         </div>
       </section>
+
+      <Stories lang="ceb" />
+      <ScienceNotes lang="ceb" />
 
       <section id="reviews" class="section-pad border-b-2 border-[var(--ink)]">
         <div class="shell grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
@@ -599,6 +651,7 @@ const faqSchema = {
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.629099811328!2d123.8965560769825!3d10.291438889829356!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a99be492180e93%3A0xfca7d1bdb78de28f!2z5Y2h5bCU6YKm5biC5Zy6!5e0!3m2!1szh-CN!2s!4v1786413885743!5m2!1szh-CN!2s"
                 width="100%"
                 height="520"
+                class="h-[320px] w-full sm:h-[520px]"
                 style="border:0"
                 loading="lazy"
                 referrerpolicy="strict-origin-when-cross-origin"
@@ -617,7 +670,7 @@ const faqSchema = {
             <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">Antes ka molakaw</h3>
           </div>
           <div class="border-t-2 border-[var(--ink)]">
-            {faqs.map((item) => (
+            {allFaqs.map((item) => (
               <details class="faq-item group border-b-2 border-[var(--ink)] py-1">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left text-lg font-black marker:hidden">
                   <span>{item.q}</span>

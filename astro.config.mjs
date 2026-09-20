@@ -6,7 +6,13 @@ const configuredSite = process.env.SITE_URL?.trim() || undefined;
 
 export default defineConfig({
   site: configuredSite,
-  integrations: configuredSite ? [sitemap()] : [],
+  integrations: configuredSite
+    ? [
+        sitemap({
+          filter: (page) => !page.includes('/404') && !page.includes('/offline'),
+        }),
+      ]
+    : [],
   i18n: {
     defaultLocale: 'ceb',
     locales: ['ceb', 'fil'],

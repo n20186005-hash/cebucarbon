@@ -1,11 +1,21 @@
 {
-  "name": "Pamilihang Carbon",
+  "name": "Pamilihang Carbon — Carbon Market Cebu City Visitor Guide",
   "short_name": "Carbon",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "description": "Independent visitor guide to Carbon Market (Pamilihang Carbon) in Cebu City, Cebu, Philippines: location map, opening details, food, transport and travel tips.",
+  "lang": "ceb",
+  "dir": "ltr",
   "icons": [
-    {"src": "/icons/favicon-32.png", "sizes": "32x32", "type": "image/png"},
-    {"src": "/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}
+    {"src": "/icons/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+    {"src": "/icons/favicon-32.png", "sizes": "32x32", "type": "image/png", "purpose": "any"},
+    {"src": "/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any"}
   ],
   "theme_color": "#15271f",
   "background_color": "#f3ead5",
-  "display": "standalone"
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "categories": ["travel", "navigation"]
 }

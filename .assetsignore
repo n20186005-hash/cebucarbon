@@ -1,0 +1,47 @@
+# Files that must NOT be uploaded when this project folder is uploaded to
+# Cloudflare Workers / Pages by hand.
+#
+# Recommended: build first (`pnpm build`) and upload the CONTENTS of `dist/`
+# (wrangler.jsonc -> assets.directory = "./dist"). Only `dist/` contains the
+# deployable site, so nothing else needs to travel with it.
+#
+# If you prefer to upload the whole repository, the patterns below strip the
+# development-only files (dependencies, sources, caches, VCS, secrets, logs).
+
+# Dependencies and lockfile
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Source, tooling and config (not needed at runtime)
+src/
+scripts/
+tsconfig.json
+astro.config.mjs
+package.json
+
+# Caches and build leftovers
+.astro/
+.wrangler/
+.mf/
+*.tsbuildinfo
+
+# VCS, editor and OS files
+.git/
+.github/
+.gitignore
+.editorconfig
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local env / secrets
+.env
+.env.*
+.dev.vars*
+
+# Local logs
+*.log
+npm-debug.log*

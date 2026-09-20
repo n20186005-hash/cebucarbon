@@ -1,0 +1,42 @@
+---
+import { getContent, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getContent(lang).stories;
+const legendLabel = lang === 'fil' ? 'Kasaysayan at alamat' : 'Kasaysayan ug sugilanon';
+---
+
+<section id="stories" class="section-pad border-b-2 border-[var(--ink)]">
+  <div class="shell">
+    <div class="grid items-end gap-8 lg:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="kicker">{t.kicker}</p>
+        <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">{t.title}</h2>
+        <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">{t.subtitle}</h3>
+      </div>
+      <p class="text-sm leading-6 text-[var(--muted)]">{t.intro}</p>
+    </div>
+
+    <div class="mt-10 grid gap-px border-2 border-[var(--ink)] bg-[var(--ink)] md:grid-cols-2">
+      {
+        t.items.map((story, index) => (
+          <article class="bg-[var(--paper)] p-6 sm:p-8">
+            <p class="text-[11px] font-black uppercase tracking-[.16em] text-[var(--market-orange)]">
+              {legendLabel} {String(index + 1).padStart(2, '0')}
+            </p>
+            <h3 class="mt-3 text-lg font-black uppercase leading-tight">{story.title}</h3>
+            <p class="mt-3 leading-7 text-[var(--muted)]">{story.body}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="mt-8 max-w-3xl border-2 border-dashed border-[var(--ink)] bg-[var(--paper-deep)] p-5 text-xs leading-5 text-[var(--muted)]">
+      {t.factNote}
+    </p>
+  </div>
+</section>

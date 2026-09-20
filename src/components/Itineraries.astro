@@ -1,0 +1,91 @@
+---
+import { getContent, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = getContent(lang).routes;
+const labels =
+  lang === 'fil'
+    ? { stops: 'Mga hintuan', tips: 'Mga paalala', half: 'Kalahating araw', full: 'Buong araw' }
+    : { stops: 'Mga hunongan', tips: 'Mga paalala', half: 'Tunga sa adlaw', full: 'Tibuok adlaw' };
+---
+
+<section id="itineraries" class="section-pad border-b-2 border-[var(--ink)]">
+  <div class="shell">
+    <div class="grid items-end gap-8 lg:grid-cols-[.85fr_1.15fr]">
+      <div>
+        <p class="kicker">{t.kicker}</p>
+        <h2 class="display mt-5 text-4xl leading-[.95] sm:text-5xl">{t.title}</h2>
+        <h3 class="mt-4 text-xl font-black uppercase tracking-wide text-[var(--tomato)]">{t.subtitle}</h3>
+      </div>
+      <p class="text-sm leading-6 text-[var(--muted)]">{t.intro}</p>
+    </div>
+
+    <p class="mt-10 text-xs font-black uppercase tracking-[.16em] text-[var(--tomato)]">{t.audienceTitle}</p>
+    <div class="mt-4 grid gap-5 lg:grid-cols-3">
+      {
+        t.audiences.map((route) => (
+          <article class="border-2 border-[var(--ink)] bg-[var(--paper)] p-6 shadow-[6px_6px_0_var(--ink)]">
+            <h3 class="text-lg font-black uppercase leading-tight">{route.title}</h3>
+            <p class="mt-2 text-xs font-black uppercase tracking-[.14em] text-[var(--market-orange)]">{route.duration}</p>
+
+            <p class="mt-5 text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{labels.stops}</p>
+            <ol class="mt-3 space-y-3">
+              {route.stops.map((stop, index) => (
+                <li class="flex gap-3 text-sm leading-6 text-[var(--muted)]">
+                  <span class="display text-lg leading-none text-[var(--market-orange)]">{String(index + 1).padStart(2, '0')}</span>
+                  <span>{stop}</span>
+                </li>
+              ))}
+            </ol>
+
+            <p class="mt-5 text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{labels.tips}</p>
+            <ul class="mt-3 space-y-2 text-sm leading-6 text-[var(--muted)]">
+              {route.tips.map((tip) => (
+                <li class="border-l-[3px] border-[var(--ink)] pl-3">{tip}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="mt-8 grid gap-5 lg:grid-cols-2">
+      <div class="border-2 border-[var(--ink)] bg-[var(--paper-deep)] p-6">
+        <p class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{labels.half}</p>
+        <h3 class="mt-2 text-lg font-black uppercase">{t.halfDayTitle}</h3>
+        <ol class="mt-4 space-y-3">
+          {
+            t.halfDayStops.map((stop, index) => (
+              <li class="flex gap-3 text-sm leading-6 text-[var(--muted)]">
+                <span class="display text-lg leading-none text-[var(--market-orange)]">{String(index + 1).padStart(2, '0')}</span>
+                <span>{stop}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <div class="border-2 border-[var(--ink)] bg-[var(--paper-deep)] p-6">
+        <p class="text-[11px] font-black uppercase tracking-[.14em] text-[var(--tomato)]">{labels.full}</p>
+        <h3 class="mt-2 text-lg font-black uppercase">{t.fullDayTitle}</h3>
+        <ol class="mt-4 space-y-3">
+          {
+            t.fullDayStops.map((stop, index) => (
+              <li class="flex gap-3 text-sm leading-6 text-[var(--muted)]">
+                <span class="display text-lg leading-none text-[var(--market-orange)]">{String(index + 1).padStart(2, '0')}</span>
+                <span>{stop}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <p class="mt-8 max-w-3xl border-l-[5px] border-[var(--market-orange)] pl-5 text-sm leading-6 text-[var(--muted)]">
+      {t.routeNote}
+    </p>
+  </div>
+</section>

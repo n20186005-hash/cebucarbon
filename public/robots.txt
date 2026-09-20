@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://cebucarbon.com/sitemap-index.xml
