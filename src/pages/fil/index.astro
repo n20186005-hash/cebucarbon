@@ -1,10 +1,24 @@
 ---
 import '../../styles/global.css';
 
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-const socialImage = Astro.site ? new URL('/images/carbon-market-hero.jpg', Astro.site).href : undefined;
-const pageTitle = 'Pamilihang Carbon · Ang buhay na pamilihan sa gitna ng Cebu';
-const pageDescription = 'Gabay sa pagbisita sa Carbon Market sa Lungsod ng Cebu: libreng pagpasok, pagkain, transportasyon, paradahan, kalapit na heritage spots, mapa at praktikal na mga tip.';
+const siteOrigin = Astro.site ?? new URL('https://cebucarbon.com');
+const siteUrl = siteOrigin.origin;
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+const socialImage = new URL('/images/carbon-market-hero.jpg', siteOrigin).href;
+const socialImageAlt = 'Carbon Market - Main view in Cebu City, Philippines';
+
+const mapsShareUrl = 'https://maps.app.goo.gl/F5UNUWTsDvdTbNph7';
+const govTourismUrl = 'https://www.cebucity.gov.ph/';
+const nationalTourismUrl = 'https://www.tourism.gov.ph/';
+
+const rating = { value: '4.2', count: 7580, countLabel: '7,580', best: 5 };
+const ratingSyncedAt = '2026 年 9 月';
+const starWidth = `${(Number(rating.value) / rating.best) * 100}%`;
+
+const pageTitle = 'Carbon Market (Cebu City) · Pamilihang Carbon - Gabay sa Pagbisita at Lokasyon';
+const pageDescription = 'Gabay sa pagbisita sa Carbon Market (Pamilihang Carbon) sa Lungsod ng Cebu, Cebu, Philippines: lokasyon at mapa, oras, libreng pagpasok, kalapit na Magellan’s Cross at Basilica Minore del Santo Niño, transportasyon, paradahan at praktikal na mga tip.';
+const ogTitle = 'Carbon Market (Pamilihang Carbon) - Cebu City Travel Guide';
+const ogDescription = 'Independent visitor guide to Carbon Market (Pamilihang Carbon) in Cebu City, Cebu, Philippines — location map, opening details, food, transport and travel tips.';
 
 const highlights = [
   { value: 'Libre', label: 'pagpasok sa pamilihan' },

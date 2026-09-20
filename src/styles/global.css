@@ -177,6 +177,30 @@ a {
   display: none;
 }
 
+.stars {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: .08em;
+}
+
+.stars span {
+  display: block;
+}
+
+.stars .stars-base {
+  color: rgba(21, 39, 31, .22);
+}
+
+.stars .stars-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--market-orange);
+}
+
 .faq-item[open] summary .faq-plus {
   transform: rotate(45deg);
 }
